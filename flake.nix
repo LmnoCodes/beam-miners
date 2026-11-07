@@ -4,7 +4,7 @@
 
   inputs = {
     # erlang 27 / elixir 1.18.1 commit hash
-    spw-nixpkgs.url = "github:NixOS/nixpkgs/21808d22b1cda1898b71cf1a1beb524a97add2c4";
+    spw-nixpkgs.url = "github:NixOS/nixpkgs/9096a6de6613138f94b809bc0408ffd7d4a1817c";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
@@ -37,16 +37,19 @@
         shellHook = ''
           echo "🚀 Lade Beam Miners Dev-Umgebung (Nix)..."
 
+          export MIX_HOME="$PWD/._mix"
+          export HEX_HOME="$PWD/._hex"
+          mkdir -p "$MIX_HOME" "$HEX_HOME"
+
           # Erlang & Elixir Versionen ausgeben
           echo "Erlang: $(erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell)"
           echo "Elixir: $(elixir --version)"
 
           # Automatische Installation/Aktualisierung von Hex und Rebar in den lokalen Ordner
-          echo "📦 Überprüfe Hex und Rebar..."
-          export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-          export HEX_UNSAFE_HTTPS=0
-          mix local.hex --force
-          mix local.rebar --force
+          echo "📦 Hole Hex über git und Rebar über curl..."
+          mix archive.install github hexpm/hex branch latest --force
+          curl -L -o "$MIX_HOME/rebar3" https://s3.amazonaws.com/rebar3/rebar3
+          chmod +x "$MIX_HOME/rebar3"
 
           echo "✨ Bereit! Du kannst jetzt 'mix deps.get' oder 'iex -S mix arena.local' ausführen."
         '';
