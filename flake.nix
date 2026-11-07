@@ -17,12 +17,12 @@
     }:
     let
       system = "x86_64-linux";
-      pkgs = nixpkgs.legencyPackages.${system};
-      spw-pkgs = spw-nixpkgs.legencyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.${system};
+      spw-pkgs = spw-nixpkgs.legacyPackages.${system};
 
     in
     {
-      devShells.default = pkgs.mkShell {
+      devShells.${system}.default = pkgs.mkShell {
         buildInputs = with pkgs; [
           spw-pkgs.beam27Packages.erlang
           spw-pkgs.beam27Packages.elixir_1_18
