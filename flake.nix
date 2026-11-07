@@ -43,8 +43,10 @@
 
           # Automatische Installation/Aktualisierung von Hex und Rebar in den lokalen Ordner
           echo "📦 Überprüfe Hex und Rebar..."
-          mix local.hex --force > /dev/null 2>&1
-          mix local.rebar --force > /dev/null 2>&1
+          export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+          export HEX_UNSAFE_HTTPS=0
+          mix local.hex --force
+          mix local.rebar --force
 
           echo "✨ Bereit! Du kannst jetzt 'mix deps.get' oder 'iex -S mix arena.local' ausführen."
         '';
